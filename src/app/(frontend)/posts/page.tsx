@@ -1,9 +1,7 @@
 import Link from "next/link";
-import { client } from "@/sanity/lib/client";
 import { POSTS_QUERY } from "@/sanity/lib/queries";
 import { sanityFetch } from "@/sanity/lib/live";
 import { Post } from "@/sanity/schemaTypes/types/post"
-const options = { next: { revalidate: 60 } };
 
 export default async function Page() {
 const result = await sanityFetch({ query: POSTS_QUERY, params: {} });
