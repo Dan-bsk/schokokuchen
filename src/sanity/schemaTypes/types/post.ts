@@ -2,6 +2,7 @@
 import type { Author } from './author'
 import type { Category } from './category'
 import type { BlockContent } from './blockContent'
+
 export interface Post {
   _id: string
   _type: 'post'
