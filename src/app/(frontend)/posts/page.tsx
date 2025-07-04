@@ -1,49 +1,30 @@
-import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
-import { PortableText } from "next-sanity";
-import { sanityFetch } from "@/sanity/lib/live";
-import { POST_QUERY } from "@/sanity/lib/queries";
-import { urlFor } from "@/sanity/lib/image";
+import { client } from "@/sanity/lib/client";
+import { POSTS_QUERY } from "@/sanity/lib/queries";
+import type { Post } from "@/sanity/schemaTypes/types/post";
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { data: post } = await sanityFetch({
-    query: POST_QUERY,
-    params: await params,
-  });
+const options = { next: { revalidate: 60 } };
 
-  if (!post) {
-    notFound();
-  }
+export default async function Page() {
+  const posts: Post[] = await client.fetch<Post[]>(POSTS_QUERY, {}, options);
 
   return (
     <main className="container mx-auto grid grid-cols-1 gap-6 p-12">
-      {post?.mainImage ? (
-        <Image
-          className="w-full aspect-[800/300]"
-          src={urlFor(post.mainImage)
-            .width(800)
-            .height(300)
-            .quality(80)
-            .auto("format")
-            .url()}
-          alt={post?.mainImage?.alt || ""}
-          width="800"
-          height="300"
-        />
-      ) : null}
-      <h1 className="text-4xl font-bold text-balance">{post?.title}</h1>
-      {post?.body ? (
-        <div className="prose">
-          <PortableText value={post.body} />
-        </div>
-      ) : null}
+      <h1 className="text-4xl font-bold">Post index</h1>
+      <ul className="grid grid-cols-1 divide-y divide-blue-100">
+        {posts.map((post) => (
+          <li key={post._id}>
+            <Link
+              className="block p-4 hover:text-blue-500"
+              href={`/posts/${post.slug?.current}`}
+            >
+              {post.title}
+            </Link>
+          </li>
+        ))}
+      </ul>
       <hr />
-      <Link href="/posts">&larr; Return to index</Link>
+      <Link href="/">&larr; Return home</Link>
     </main>
   );
 }
