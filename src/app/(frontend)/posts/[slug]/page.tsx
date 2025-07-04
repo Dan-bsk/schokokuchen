@@ -5,12 +5,12 @@ import Link from "next/link";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 
-
 export default async function Page({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
+
   const { data: post } = await sanityFetch({
     query: POST_QUERY,
     params: await params,
