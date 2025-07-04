@@ -1,30 +1,20 @@
-import Link from "next/link";
-import { client } from "@/sanity/lib/client";
-import { POSTS_QUERY } from "@/sanity/lib/queries";
-import type { Post } from "@/sanity/schemaTypes/types/post";
-
-const options = { next: { revalidate: 60 } };
+import { sanityFetch } from "@/sanity/lib/live";
+import { POSTS_QUERY } from '@/sanity/lib/queries'
+import { PostCard } from '@/components/PostCard'
+import { Title } from '@/components/Title'
+import { POSTS_QUERYResult } from "@/sanity/schemaTypes/types/post";
 
 export default async function Page() {
-  const posts: Post[] = await client.fetch<Post[]>(POSTS_QUERY, {}, options);
+  const {data: posts} = await sanityFetch({query: POSTS_QUERY});
 
   return (
     <main className="container mx-auto grid grid-cols-1 gap-6 p-12">
-      <h1 className="text-4xl font-bold">Post index</h1>
-      <ul className="grid grid-cols-1 divide-y divide-blue-100">
-        {posts.map((post) => (
-          <li key={post._id}>
-            <Link
-              className="block p-4 hover:text-blue-500"
-              href={`/posts/${post.slug?.current}`}
-            >
-              {post.title}
-            </Link>
-          </li>
+      <Title>Post Index</Title>
+      <div className="flex flex-col gap-24 py-12">
+        {posts.map((post: POSTS_QUERYResult) => (
+          <PostCard key={post._id} {...post} />
         ))}
-      </ul>
-      <hr />
-      <Link href="/">&larr; Return home</Link>
+      </div>
     </main>
-  );
+  )
 }

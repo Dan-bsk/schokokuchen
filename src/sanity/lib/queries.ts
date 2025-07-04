@@ -1,34 +1,49 @@
-import { defineQuery } from 'next-sanity';
+import { defineQuery } from 'next-sanity'
 
-export const POSTS_QUERY = defineQuery(`*[_type == "post" && defined(slug.current)][0...12]{
+export const POSTS_QUERY =
+  defineQuery(`*[_type == "post" && defined(slug.current)]|order(publishedAt desc)[0...12]{
   _id,
-  _type,
   title,
   slug,
+  body,
+  mainImage,
   publishedAt,
-  author->{_id, name, image},  // Referenzen per join laden
-  mainImage{
-    _type,
-    asset->{_id, url},
-    hotspot,
-    alt
-  },
-  categories[]->{_id, title}
-}`);
+  "categories": coalesce(
+    categories[]->{
+      _id,
+      slug,
+      title
+    },
+    []
+  ),
+  author->{
+    name,
+    image
+  }
+}`)
 
-export const POST_QUERY = defineQuery(`*[_type == "post" && slug.current == $slug][0]{
+export const POSTS_SLUGS_QUERY =
+  defineQuery(`*[_type == "post" && defined(slug.current)]{ 
+  "slug": slug.current
+}`)
+
+export const POST_QUERY =
+  defineQuery(`*[_type == "post" && slug.current == $slug][0]{
   _id,
-  _type,
   title,
   body,
-  slug,
+  mainImage,
   publishedAt,
-  author->{_id, name, image},
-  mainImage{
-    _type,
-    asset->{_id, url},
-    hotspot,
-    alt
-  },
-  categories[]->{_id, title}
-}`);
+  "categories": coalesce(
+    categories[]->{
+      _id,
+      slug,
+      title
+    },
+    []
+  ),
+  author->{
+    name,
+    image
+  }
+}`)

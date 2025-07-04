@@ -1,39 +1,82 @@
-// src/types/post.ts
-import type { Author } from './author'
-import type { Category } from './category'
-import type { BlockContent } from './blockContent'
+import type { BlockContent } from './blockContent';
 
-export interface Post {
-  _id: string
-  _type: 'post'
-  title: string
-  slug?: {
-    _type: 'slug'
-    current: string
-  }
-  author?: {
-    _type: 'reference'
-    _ref: string
-  } | Author
+/**
+ * Der Post-Typ für Abfragen mit `author->` und `categories[]->` aus `POST_QUERY`
+ */
+export interface POST_QUERYResult {
+  _id: string;
+  title: string;
+  body?: BlockContent;
   mainImage?: {
-    _type: 'image'
+    _type: 'image';
     asset: {
-      _ref: string
-      _type: 'reference'
-    }
+      _ref: string;
+      _type: 'reference';
+    };
     hotspot?: {
-      x: number
-      y: number
-      height: number
-      width: number
-    }
-    alt?: string
-  }
-  categories?: Array<{
-    _type: 'reference'
-    _ref: string
-  } | Category>
-  publishedAt?: string // ISO Datetime
-  body?: BlockContent
+      x: number;
+      y: number;
+      height: number;
+      width: number;
+    };
+    alt?: string;
+  };
+  publishedAt?: string;
+  categories?: {
+    _id: string;
+    slug?: {
+      current: string;
+    };
+    title: string;
+  }[];
+  author?: {
+    name: string;
+    image?: {
+      _type: 'image';
+      asset: {
+        _ref: string;
+        _type: 'reference';
+      };
+    };
+  };
 }
-
+export interface POSTS_QUERYResult {
+  _id: string;
+  title: string;
+  slug?: {
+    current: string;
+  };
+  body?: BlockContent;
+  mainImage?: {
+    _type: 'image';
+    asset: {
+      _ref: string;
+      _type: 'reference';
+    };
+    hotspot?: {
+      x: number;
+      y: number;
+      height: number;
+      width: number;
+    };
+    alt?: string;
+  };
+  publishedAt?: string;
+  categories?: {
+    _id: string;
+    slug?: {
+      current: string;
+    };
+    title: string;
+  }[];
+  author?: {
+    name: string;
+    image?: {
+      _type: 'image';
+      asset: {
+        _ref: string;
+        _type: 'reference';
+      };
+    };
+  };
+}
