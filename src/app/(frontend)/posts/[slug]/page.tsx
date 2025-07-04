@@ -7,6 +7,8 @@ import { POST_QUERY } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import { components } from "@/sanity/portableTextComponents";
 
+
+
 export default async function Page({
   params,
 }: {
